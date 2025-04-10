@@ -88,10 +88,3 @@ Générée automatiquement avec `@nestjs/swagger`.
 
 - [ ] Ajout des tests unitaires
 
-## 🤝 Contribuer
-
-1. Fork le repo
-2. Crée une branche (`git checkout -b feature/ma-feature`)
-3. Commit (`git commit -am 'Ajout de ma feature'`)
-4. Push (`git push origin feature/ma-feature`)
-5. Ouvre une Pull Request
