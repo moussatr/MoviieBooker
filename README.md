@@ -13,7 +13,7 @@ Une API REST construite avec **NestJS**, **TypeORM** et **PostgreSQL**, permetta
 ## 🚀 Lancer le projet
 
 # Cloner le projet
-git clone https://github.com/ton-user/movie-reservation-api.git
+git clone https://github.com/moussatr/MoviieBooker.git
 cd movie-reservation-api
 
 # Installer les dépendances
@@ -46,7 +46,7 @@ Générée automatiquement avec `@nestjs/swagger`.
 | Méthode | Endpoint           | Description                             | Auth |
 |---------|--------------------|-----------------------------------------|------|
 | POST    | `/reservation`     | Crée une réservation                    | ✅   |
-| GET     | `/reservation`     | Liste toutes les réservations           | ❌   |
+| GET     | `/reservation`     | Liste toutes les réservations           | ✅  |
 | POST    | `/reservation/:id` | Supprime une réservation (via query id) | ✅   |
 
 
