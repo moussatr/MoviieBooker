@@ -6,10 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { JwtModule } from '@nestjs/jwt';
 import { MoviesModule } from './movies/movies.module';
 import { ReservationModule } from './reservation/reservation.module';
-
 
 @Module({
   imports: [
@@ -18,25 +16,25 @@ import { ReservationModule } from './reservation/reservation.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET', 'defaultSecretKey'),
+        signOptions: { expiresIn: '1d' }, 
         type: 'postgres',
-        host: configService.get<string>('DB_HOST', 'localhost'),
+        host: configService.get<string>('DB_HOST'),
         port: +configService.get<number>('DB_PORT', 5432),
-        username: configService.get<string>('DB_USERNAME', 'postgres'),
-        password: configService.get<string>('DB_PASSWORD', 'root'),
-        database: configService.get<string>('DB_DATABASE', 'nest_auth_db'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '1d' },  
+        username: configService.get<string>('DB_USERNAME'), 
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_DATABASE'),
         autoLoadEntities: true,
         synchronize: true,
-      }),
-    }),
-    UsersModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'defaultSecretKey', 
-      signOptions: { expiresIn: '1d' }, 
-    }),
+        ssl: true,
+        extra: {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        },
+      }), 
+    }), 
+    UsersModule, 
     AuthModule,
     MoviesModule,
     ReservationModule,

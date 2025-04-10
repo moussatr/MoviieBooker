@@ -3,7 +3,7 @@ import { Controller, Get, Query} from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { Observable } from 'rxjs';
 import { MovieResponse, Genre, Movie } from './types';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('movie')
@@ -11,32 +11,48 @@ import { ApiTags } from '@nestjs/swagger';
 export class MoviesController {
      constructor(private readonly moviesService: MoviesService) {}
 
-    @ApiOperation({ summary: 'Get movies' })
+
     @Get('/movies')
+    @ApiOperation({ summary: 'Get movies' })
+    @ApiResponse({ status: 200, description: 'Get movies' })
+    @ApiResponse({ status: 404, description: 'Movies not found' })
+    @ApiResponse({ status: 500, description: 'Internal server error' })
     getMovies(@Query('page') page: number, @Query('sortBy') sortBy: string): Observable<MovieResponse> {
         return this.moviesService.getMovies(page, sortBy);
     }
 
-    @ApiOperation({ summary: 'Get now playing movies' })
+
     @Get('movie/now_playing')
+    @ApiOperation({ summary: 'Get now playing movies' })
+    @ApiResponse({ status: 200, description: 'Get now playing movies' })
+    @ApiResponse({ status: 404, description: 'Now playing movies not found' })
     getNowPlayingMovies(): Observable<MovieResponse> {
         return this.moviesService.getNowPlayingMovies();
     }
 
-    @ApiOperation({ summary: 'Search movie' })
+
     @Get('/search/movie')
+    @ApiOperation({ summary: 'Search movie' })
+    @ApiResponse({ status: 200, description: 'Search movie' })
+    @ApiResponse({ status: 404, description: 'Movie not found' })
+    @ApiResponse({ status: 500, description: 'Internal server error' })
     searchMovie(@Query('movieName') movieName: string): Observable<MovieResponse> {
         return this.moviesService.searchMovie(movieName);
     }
 
-    @ApiOperation({ summary: 'Get movie by ID' })
+
     @Get('/movie/:movie_id')
+    @ApiOperation({ summary: 'Get movie by ID' })
+    @ApiResponse({ status: 200, description: 'Get movie by ID' })
+    @ApiResponse({ status: 404, description: 'Movie not found' })
     getMovieById(@Query('movieId') movieId: string): Observable<Movie> { 
         return this.moviesService.getMovieById(movieId);
     }
 
-    @ApiOperation({ summary: 'Get genres' })
     @Get()
+    @ApiOperation({ summary: 'Get genres' })
+    @ApiResponse({ status: 200, description: 'Get genres' })
+    @ApiResponse({ status: 404, description: 'Genres not found' })
     getGenres(): Observable<Genre[]> {
         return this.moviesService.getGenres();
     }
