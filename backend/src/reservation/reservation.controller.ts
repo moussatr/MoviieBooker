@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
 import { Reservation } from './reservation.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -8,19 +8,27 @@ import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 @Controller('reservation')
 export class ReservationController {
     constructor(private readonly reservationService: ReservationService) {}
-   @Post()
-   @UseGuards(JwtAuthGuard)
-   @ApiOperation({ summary: 'Create a reservation' }) // Description de l'action
-   @ApiResponse({ status: 201, description: 'Reservation created successfully.', type: Reservation })
-   @ApiResponse({ status: 400, description: 'Invalid data provided.' })
-   @ApiBearerAuth()
-   async createReservation(@Body() reservationData: Reservation): Promise<Reservation> {
-     return this.reservationService.create(reservationData); 
-   }
+    @Post()
+    @UseGuards(JwtAuthGuard)
+    @ApiOperation({ summary: 'Create a reservation' })
+    @ApiResponse({ status: 201, description: 'Reservation created successfully.', type: Reservation })
+    @ApiResponse({ status: 400, description: 'Invalid data provided.' })
+    @ApiBearerAuth()
+    async createReservation(@Request() req, @Body() reservationData: Reservation): Promise<Reservation> {
+      const user = req.user; 
+
+      const dataWithUser = {
+        ...reservationData, 
+        user: user.id, 
+      };
+  
+      return this.reservationService.create(dataWithUser);
+    }
 
    @Get()
    @ApiOperation({ summary: 'Get all reservations' })
    @ApiResponse({ status: 200, description: 'Retrieve all reservations', type: [Reservation] })
+   @ApiBearerAuth()
    async getAllReservations():  Promise<Reservation[]> {
         return this.reservationService.findAll();  
     }

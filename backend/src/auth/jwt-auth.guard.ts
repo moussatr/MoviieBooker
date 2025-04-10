@@ -11,14 +11,16 @@ export class JwtAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = request.headers['authorization']?.split(' ')[1];
-   
+
     if (!token) {
       console.log('Token manquant');
       return false; 
-    } 
-  
+    }
+
     try {
-      const decoded = this.jwtService.verify(token); 
+      const decoded = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET_KEY,  // Assurez-vous que la clé secrète est fournie ici
+      }); 
       console.log('Token validé:', decoded);
       request.user = decoded; 
       return true;
@@ -27,5 +29,4 @@ export class JwtAuthGuard implements CanActivate {
       return false; 
     }
   }
-  
 }
